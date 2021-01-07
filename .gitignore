@@ -1,0 +1,5 @@
+# Cargo build folders
+target
+
+# VS Code
+.vscode
