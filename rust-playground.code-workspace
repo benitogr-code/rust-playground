@@ -1,7 +1,10 @@
 {
 	"folders": [
         {
-            "path": "hello_cargo"
+            "path": "ch01_hello_rust"
+        },
+        {
+            "path": "ch02_guess_game"
         }
     ]
 }
