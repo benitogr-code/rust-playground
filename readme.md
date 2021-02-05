@@ -1,7 +1,9 @@
 ## Rust Playground
 
-A few Rust projects covered in [The Rust Programming Language](https://doc.rust-lang.org/book/title-page.html) book.
+A set of small Rust applications to learn the language and toolchain.
 
-To build and run these projects, the Rust tools are required.
+References:
 
-- https://www.rust-lang.org/tools/install
+- [The Rust Programming Language](https://doc.rust-lang.org/book/title-page.html) book.
+- [Rust tools](https://www.rust-lang.org/tools/install).
+- [Fullstack Rust](https://www.newline.co/fullstack-rust)
