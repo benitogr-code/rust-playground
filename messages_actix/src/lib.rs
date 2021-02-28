@@ -22,6 +22,15 @@ struct AppState {
     messages: Arc<Mutex<Vec<String>>>,
 }
 
+impl AppState {
+    fn incr_request_count(&self) -> usize {
+        let new_count = self.request_count.get() + 1;
+        self.request_count.set(new_count);
+
+        new_count
+    }
+}
+
 #[derive(Serialize)]
 struct IndexResponse {
     server_id: usize,
@@ -57,9 +66,7 @@ struct LookupResponse {
 
 #[get("/")]
 fn index(state: web::Data<AppState>) -> Result<web::Json<IndexResponse>> {
-    let request_count = state.request_count.get() + 1;
-    state.request_count.set(request_count);
-
+    let request_count = state.incr_request_count();
     let messages = state.messages.lock().unwrap();
 
     Ok(web::Json(IndexResponse {
@@ -71,9 +78,7 @@ fn index(state: web::Data<AppState>) -> Result<web::Json<IndexResponse>> {
 
 #[get("/lookup/{index}")]
 fn lookup(state: web::Data<AppState>, idx: web::Path<usize>) -> Result<web::Json<LookupResponse>> {
-    let request_count = state.request_count.get() + 1;
-    state.request_count.set(request_count);
-
+    let request_count = state.incr_request_count();
     let messages = state.messages.lock().unwrap();
     let result = messages.get(idx.into_inner()).cloned();
 
@@ -86,9 +91,7 @@ fn lookup(state: web::Data<AppState>, idx: web::Path<usize>) -> Result<web::Json
 
 #[post("/clear")]
 fn clear(state: web::Data<AppState>) -> Result<web::Json<IndexResponse>> {
-    let request_count = state.request_count.get() + 1;
-    state.request_count.set(request_count);
-
+    let request_count = state.incr_request_count();
     let mut messages = state.messages.lock().unwrap();
     messages.clear();
 
@@ -100,9 +103,7 @@ fn clear(state: web::Data<AppState>) -> Result<web::Json<IndexResponse>> {
 }
 
 fn post(payload: web::Json<PostInput>, state: web::Data<AppState>) -> Result<web::Json<PostResponse>> {
-    let request_count = state.request_count.get() + 1;
-    state.request_count.set(request_count);
-
+    let request_count = state.incr_request_count();
     let mut messages = state.messages.lock().unwrap();
     messages.push(payload.message.clone());
 
@@ -115,8 +116,7 @@ fn post(payload: web::Json<PostInput>, state: web::Data<AppState>) -> Result<web
 
 fn post_error(err: JsonPayloadError, req: &HttpRequest) -> Error {
     let state = req.get_app_data::<AppState>().unwrap();
-    let request_count = state.request_count.get() + 1;
-    state.request_count.set(request_count);
+    let request_count = state.incr_request_count();
 
     let post_error = PostError {
         server_id: state.server_id,
@@ -164,7 +164,7 @@ impl MessageApp {
                 .service(lookup)
         })
         .bind(("127.0.0.1", self.port))?
-        .workers(8)
+        .workers(4)
         .run()
     }
 }
