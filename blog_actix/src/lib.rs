@@ -35,8 +35,9 @@ impl Blog {
             App::new()
                 .data(pool.clone())
                 .wrap(middleware::Logger::default())
-                .configure(routes::users::configure)
+                .configure(routes::comments::configure)
                 .configure(routes::posts::configure)
+                .configure(routes::users::configure)
         })
         .bind(("127.0.0.1", self.port))?
         .run()
