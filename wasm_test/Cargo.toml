@@ -1,0 +1,10 @@
+[package]
+name = "wasm_test"
+version = "0.1.0"
+authors = ["Benito GR"]
+edition = "2018"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
